@@ -1,4 +1,4 @@
-variable "name_prefix" {
+variable "project" {
   description = "Name prefix for resources"
   type        = string
 }
