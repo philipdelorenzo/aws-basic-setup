@@ -11,6 +11,7 @@
 **/.doppler.token
 **/doppler.token
 **/env.auto.tfvars
+iac/aws/terraform/environments/**/env.auto.tfvars
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
