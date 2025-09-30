@@ -7,6 +7,10 @@ service_title := "AWS Base Setup - VPC|Network, etc."
 service_author := "Philip DeLorenzo"
 env := "dev"
 AWS_PROFILE := $(shell cat .aws_profile)
+REGION := us-west-2
+NETWORK_ID := 10.10
+CIDR_NOTATION := 16
+VPC_CIDR_BLOCK := "${NETWORK_ID}.0.0/${CIDR_NOTATION}"
 default: help
 
 # We need to have a doppler token set to proceed, this is by design so that bad actors cannot access the secrets, or environments.
@@ -30,6 +34,8 @@ prereqs:
 	@if [[ ${IS_TOKEN} == '[CRITICAL] - The .doppler file is missing, please set the Doppler token in this file.' ]]; then echo "${IS_TOKEN}" && exit 1; fi
 	@export AWS_PROFILE=${AWS_PROFILE} && \
 	export PROJECT=${service} && \
+	export NETWORK_ID=${NETWORK_ID} && \
+	export VPC_CIDR_BLOCK=${VPC_CIDR_BLOCK} && \
 	bash -l "iac/scripts/prereqs.sh"
 
 fmt: ##@development Formats the terraform files
@@ -58,7 +64,7 @@ init: ##@terraform Installs needed providers and initializes the terraform files
 	-backend-config='profile=${AWS_PROFILE}' \
 	-backend-config='bucket=${service}-terraform-state' \
 	-backend-config='key=${service}/${env}/terraform.tfstate' \
-	-backend-config='region=us-west-2'"
+	-backend-config='region=${REGION}'"
 
 refresh: ##@terraform Refreshes the terraform state file
 	$(info ********** Refreshing the Terraform State File **********)
@@ -70,7 +76,11 @@ validate: ##@terraform Validates the terraform files
 
 plan: ##@terraform Plans the terraform changes to be applied
 	$(info ********** Planning Terraform Changes **********)
-	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/terraform/environments/dev || exit 1 && terraform plan -out=tfplan -var='profile=${AWS_PROFILE}'"
+	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/terraform/environments/dev || exit 1 && \
+	terraform plan -out=tfplan \
+	-var='profile=${AWS_PROFILE}' \
+	-var=
+	"
 
 apply: ##@terraform Applies the terraform changes to be applied
 	$(info ********** Applying Terraform Changes **********)

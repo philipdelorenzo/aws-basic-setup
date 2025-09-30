@@ -10,6 +10,7 @@
 **/.doppler
 **/.doppler.token
 **/doppler.token
+**/env.auto.tfvars
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
