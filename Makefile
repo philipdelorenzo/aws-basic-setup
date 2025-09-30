@@ -6,6 +6,7 @@ service := "aws-base"
 service_title := "AWS Base Setup - VPC|Network, etc."
 service_author := "Philip DeLorenzo"
 env := "dev"
+tfvars_file := "$(shell pwd)"/iac/aws/terraform/environments/dev/env.auto.tfvars
 AWS_PROFILE := $(shell cat .aws_profile)
 REGION := us-west-2
 NETWORK_ID := 10.10
@@ -78,9 +79,8 @@ plan: ##@terraform Plans the terraform changes to be applied
 	$(info ********** Planning Terraform Changes **********)
 	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/terraform/environments/dev || exit 1 && \
 	terraform plan -out=tfplan \
-	-var='profile=${AWS_PROFILE}' \
-	-var=
-	"
+	-var-file=${tfvars_file} \
+	-var='profile=${AWS_PROFILE}'"
 
 apply: ##@terraform Applies the terraform changes to be applied
 	$(info ********** Applying Terraform Changes **********)
