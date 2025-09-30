@@ -8,10 +8,11 @@ module "vpc" {
 }
 
 # Networking Module
-module "networking" {
-  source = "./modules/networking"
+module "network" {
+  source = "./modules/network"
 
-  name_prefix        = local.name_prefix
+  cidr_prefix = var.cidr_prefix
+  project = var.project
   availability_zones = data.aws_availability_zones.available.names
   tags               = local.common_tags
 }

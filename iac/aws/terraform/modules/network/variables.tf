@@ -17,3 +17,7 @@ variable "tags" {
 variable "cidr_prefix" {
   description = "The Network ID of the VPC CIDR"
 }
+
+variable "vpc_cidr" {
+  description = "The CIDR notation of the VPC network"
+}

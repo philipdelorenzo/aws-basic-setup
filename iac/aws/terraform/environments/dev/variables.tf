@@ -22,6 +22,7 @@ variable "profile" {
 
 variable "cidr_prefix" {
   description = "The Network ID of the VPC CIDR"
+  type        = string
 }
 
 variable "vpc_cidr" {

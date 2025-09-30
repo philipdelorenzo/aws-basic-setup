@@ -5,6 +5,7 @@
 service := "aws-base"
 service_title := "AWS Base Setup - VPC|Network, etc."
 service_author := "Philip DeLorenzo"
+env := "dev"
 AWS_PROFILE := $(shell cat .aws_profile)
 default: help
 
@@ -27,7 +28,9 @@ IS_TOKEN := $$(bash -c "$$DTOKEN_EVAL")
 .PHONY: prereqs bootstrap init
 prereqs:
 	@if [[ ${IS_TOKEN} == '[CRITICAL] - The .doppler file is missing, please set the Doppler token in this file.' ]]; then echo "${IS_TOKEN}" && exit 1; fi
-	@export AWS_PROFILE=${AWS_PROFILE} && bash -l "iac/scripts/prereqs.sh"
+	@export AWS_PROFILE=${AWS_PROFILE} && \
+	export PROJECT=${service} && \
+	bash -l "iac/scripts/prereqs.sh"
 
 fmt: ##@development Formats the terraform files
 	$(info ********** Formatting Terraform Files **********)
@@ -40,14 +43,22 @@ bootstrap: ##@terraform Bootstraps the development environment
 	$(info ********** Bootstrapping Development Environment (Creating AWS s3 Backend) **********)
 	@$(MAKE) prereqs
 	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/bootstrap || exit 1 && terraform init"
-	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/bootstrap || exit 1 && terraform plan -out=tfplan -var='profile=${AWS_PROFILE}'"
+	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/bootstrap || exit 1 && \
+	terraform plan -out=tfplan \
+	-var='profile=${AWS_PROFILE}' \
+	-var-file=$$(pwd)/iac/aws/terraform/environments/dev/env.auto.tfvars"
 	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/bootstrap || exit 1 && terraform apply tfplan"
 	@echo "[INFO] - Bootstrap Complete!"
 
 init: ##@terraform Installs needed providers and initializes the terraform files
 	$(info ********** Initializing the Terraform Environment/Providers **********)
 	@$(MAKE) prereqs
-	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/terraform/environments/dev || exit 1 && terraform init -backend-config='profile=${AWS_PROFILE}'"
+	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/terraform/environments/dev || exit 1 && \
+	terraform init \
+	-backend-config='profile=${AWS_PROFILE}' \
+	-backend-config='bucket=${service}-terraform-state' \
+	-backend-config='key=${service}/${env}/terraform.tfstate' \
+	-backend-config='region=us-west-2'"
 
 refresh: ##@terraform Refreshes the terraform state file
 	$(info ********** Refreshing the Terraform State File **********)

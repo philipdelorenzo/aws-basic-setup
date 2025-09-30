@@ -1,5 +1,5 @@
 # The project variable below will be replaced with the instantiation of the Makefile.
-project = "<replace>"
+project = "aws-base"
 # Network ID - 10.10
 # Node ID - 0.0
 cidr_prefix = "10.10"

@@ -17,6 +17,10 @@ variable "project" {
   type        = string
 }
 
+variable "cidr_prefix" {
+  description = "The network ID of the CIDR notation"
+}
+
 variable "REGION" {
   description = "AWS region"
   type        = string
