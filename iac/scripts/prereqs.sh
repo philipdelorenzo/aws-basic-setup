@@ -19,5 +19,5 @@ REPO=$(dirname "$0")/../..
 rsync "${REPO}/iac/aws/terraform/environments/dev/env.template" "${REPO}/iac/aws/terraform/environments/dev/env.auto.tfvars"
 
 sed -i '' "s/project = .*/project = \"${PROJECT}\"/g" "${REPO}/iac/aws/terraform/environments/dev/env.auto.tfvars"
-sed -i '' "s/cidr_prefix = .*/cidr_prefix = \"${NETWORK_ID}\"/g" "${REPO}/iac/aws/terraform/environments/dev/env.auto.tfvars"
+sed -i '' "s/network_id = .*/network_id = \"${NETWORK_ID}\"/g" "${REPO}/iac/aws/terraform/environments/dev/env.auto.tfvars"
 sed -i '' "s|vpc_cidr = .*|vpc_cidr = \"${VPC_CIDR_BLOCK}\"|g" "${REPO}/iac/aws/terraform/environments/dev/env.auto.tfvars"

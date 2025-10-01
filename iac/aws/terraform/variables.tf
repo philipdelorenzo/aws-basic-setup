@@ -1,23 +1,9 @@
-variable "OIDC_ROLE" {
-  description = "ARN of the IAM Role for GitHub Actions OIDC access"
-  type        = string
-}
-
-variable "environment" {
-  description = "Environment name (e.g., dev, staging, prod)"
-  type        = string
-  validation {
-    condition     = contains(["dev", "staging", "prod"], var.environment)
-    error_message = "Environment must be dev, staging, or prod."
-  }
-}
-
 variable "project" {
   description = "Name of the project"
   type        = string
 }
 
-variable "cidr_prefix" {
+variable "network_id" {
   description = "The network ID of the CIDR notation"
 }
 

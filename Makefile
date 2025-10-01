@@ -6,6 +6,7 @@ service := "aws-base"
 service_title := "AWS Base Setup - VPC|Network, etc."
 service_author := "Philip DeLorenzo"
 env := "dev"
+repo := "${service}-setup"
 tfvars_file := "$(shell pwd)"/iac/aws/terraform/environments/dev/env.auto.tfvars
 AWS_PROFILE := $(shell cat .aws_profile)
 REGION := us-west-2
@@ -37,12 +38,12 @@ prereqs:
 	export PROJECT=${service} && \
 	export NETWORK_ID=${NETWORK_ID} && \
 	export VPC_CIDR_BLOCK=${VPC_CIDR_BLOCK} && \
+	export ENVIRONMENT=${env} && \
 	bash -l "iac/scripts/prereqs.sh"
 
 fmt: ##@development Formats the terraform files
 	$(info ********** Formatting Terraform Files **********)
-	@terraform fmt -recursive iac/aws/terraform/environments
-	@terraform fmt -recursive iac/aws/terraform/modules
+	@terraform fmt -recursive iac/aws/terraform
 	@terraform fmt -recursive iac/aws/bootstrap
 	@echo "[INFO] - Terraform Format Complete!"
 
@@ -53,7 +54,7 @@ bootstrap: ##@terraform Bootstraps the development environment
 	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/bootstrap || exit 1 && \
 	terraform plan -out=tfplan \
 	-var='profile=${AWS_PROFILE}' \
-	-var-file=$$(pwd)/iac/aws/terraform/environments/dev/env.auto.tfvars"
+	-var='project=${service}'"
 	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/bootstrap || exit 1 && terraform apply tfplan"
 	@echo "[INFO] - Bootstrap Complete!"
 
@@ -65,7 +66,8 @@ init: ##@terraform Installs needed providers and initializes the terraform files
 	-backend-config='profile=${AWS_PROFILE}' \
 	-backend-config='bucket=${service}-terraform-state' \
 	-backend-config='key=${service}/${env}/terraform.tfstate' \
-	-backend-config='region=${REGION}'"
+	-backend-config='region=${REGION}' \
+	-var-file=${tfvars_file}"
 
 refresh: ##@terraform Refreshes the terraform state file
 	$(info ********** Refreshing the Terraform State File **********)

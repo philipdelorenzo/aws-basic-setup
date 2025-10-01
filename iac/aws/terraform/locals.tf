@@ -2,11 +2,11 @@ locals {
   common_tags = merge(
     var.tags,
     {
-      Environment = var.environment
+      Environment = "dev"
       Project     = var.project
       ManagedBy   = "Terraform"
     }
   )
 
-  name_prefix = "${var.project}-${var.environment}"
+  name_prefix = "local-${var.project}"
 }

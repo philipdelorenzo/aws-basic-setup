@@ -3,11 +3,6 @@ variable "project" {
   type        = string
 }
 
-variable "OIDC_ROLE" {
-  description = "OIDC role for the EKS cluster"
-  type        = string
-}
-
 variable "REGION" {
   description = "AWS region"
   type        = string
@@ -20,7 +15,7 @@ variable "profile" {
   default     = "default"
 }
 
-variable "cidr_prefix" {
+variable "network_id" {
   description = "The Network ID of the VPC CIDR"
   type        = string
 }

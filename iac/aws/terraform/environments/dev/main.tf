@@ -11,3 +11,10 @@ terraform {
     region  = var.REGION
   }
 }
+
+module "base_aws_stack" {
+  source     = "../../"
+  project    = var.project
+  network_id = var.network_id
+  vpc_cidr   = var.vpc_cidr
+}
