@@ -9,7 +9,6 @@ env := "dev"
 repo := "${service}-setup"
 tfvars_file := "$(shell pwd)"/iac/aws/terraform/environments/dev/env.auto.tfvars
 AWS_PROFILE := $(shell cat .aws_profile)
-REGION := us-west-2
 NETWORK_ID := 10.10
 CIDR_NOTATION := 16
 VPC_CIDR_BLOCK := "${NETWORK_ID}.0.0/${CIDR_NOTATION}"
@@ -31,7 +30,13 @@ export DTOKEN_EVAL
 IS_TOKEN := $$(bash -c "$$DTOKEN_EVAL")
 
 ############# Development Section #############
-.PHONY: prereqs bootstrap init
+.PHONY: configure prereqs setup fmt
+configure:
+	$(info ********** Configure the AWS CLI **********)
+	@if [[ ${IS_TOKEN} == '[CRITICAL] - The .doppler file is missing, please set the Doppler token in this file.' ]]; then echo "${IS_TOKEN}" && exit 1; fi
+	@doppler run --token ${DOPPLER_TOKEN} --command "bash scripts/configure.sh"
+	@echo "[INFO] - AWS CLI Configuration Complete!"
+
 prereqs:
 	@if [[ ${IS_TOKEN} == '[CRITICAL] - The .doppler file is missing, please set the Doppler token in this file.' ]]; then echo "${IS_TOKEN}" && exit 1; fi
 	@export AWS_PROFILE=${AWS_PROFILE} && \
@@ -39,7 +44,15 @@ prereqs:
 	export NETWORK_ID=${NETWORK_ID} && \
 	export VPC_CIDR_BLOCK=${VPC_CIDR_BLOCK} && \
 	export ENVIRONMENT=${env} && \
-	bash -l "iac/scripts/prereqs.sh"
+	bash -l "scripts/prereqs.sh"
+
+setup: ##@development Installs needed prerequisites and software to develop the project
+	$(info ********** Installing Developer Tooling Prerequisites **********)
+	@bash -l scripts/init.sh -a
+	@bash -l scripts/init.sh -p
+	@asdf install
+	@asdf reshim
+	@echo "[INFO] - Installation Complete!"
 
 fmt: ##@development Formats the terraform files
 	$(info ********** Formatting Terraform Files **********)
@@ -47,15 +60,12 @@ fmt: ##@development Formats the terraform files
 	@terraform fmt -recursive iac/aws/bootstrap
 	@echo "[INFO] - Terraform Format Complete!"
 
+.PHONY: bootstrap init refresh validate plan apply destroy
 bootstrap: ##@terraform Bootstraps the development environment
 	$(info ********** Bootstrapping Development Environment (Creating AWS s3 Backend) **********)
 	@$(MAKE) prereqs
 	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/bootstrap || exit 1 && terraform init"
-	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/bootstrap || exit 1 && \
-	terraform plan -out=tfplan \
-	-var='profile=${AWS_PROFILE}' \
-	-var='project=${service}'"
-	@doppler run --token ${DOPPLER_TOKEN} --command "cd iac/aws/bootstrap || exit 1 && terraform apply tfplan"
+	@doppler run --token ${DOPPLER_TOKEN} --command "export DOPPLER_TOKEN=${DOPPLER_TOKEN} && bash iac/scripts/bootstrap.sh ${service}"
 	@echo "[INFO] - Bootstrap Complete!"
 
 init: ##@terraform Installs needed providers and initializes the terraform files

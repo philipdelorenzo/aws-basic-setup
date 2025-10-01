@@ -3,7 +3,7 @@
 set -euo pipefail
 
 BASEDIR=$(dirname "$0")
-REPO=$(dirname "$0")/../..
+REPO=$(dirname "$0")/..
 
 [[ -z "${AWS_PROFILE:-}" ]] && (echo "[ERROR] - AWS_PROFILE environment variable not set! Please set it to the AWS CLI profile you wish to use for this project and try again...." && exit 1)
 [[ -z "${PROJECT:-}" ]] && (echo "[ERROR] - PROJECT environment variable not set!" && exit 1)

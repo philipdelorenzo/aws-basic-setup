@@ -2,13 +2,24 @@
 
 A simple Terraform project that sets up a VPC with:
 
+- 10.10.0.0/16 CIDR - You can change this in the Makefile to a different Network ID if desired.
+- Internet Gateway
+- NAT
+- Security Group
+- Route Tables
 
 ## Prerequisites
+
+## AWS CLI Configure
+
+#### _This presumes the Doppler project with the same name as the repo, and configs exist._
+
+We need to configure our AWS CLI - `make configure`
 
 There are some prerequisites that will allow the developer to interact with this repo much easier, with
 greater efficiency.
 
-This just makes it simple - you can create whatever you like on your system.
+This just keeps it simple...
 
 - [asdf](https://asdf-vm.com/)
 - [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
@@ -20,7 +31,7 @@ This just makes it simple - you can create whatever you like on your system.
 For a better developer experience, a Makefile _(for MacOS only)_ has been provided in the repo root, you can quickly install these with the following command:
 
 ```bash
-make bootstrap
+make setup
 ```
 
 ## IaC Documentation
@@ -34,12 +45,13 @@ See the [IaC Documentation](./iac/README.md)
 
 The following variables are needed in the sync'd configuration from Doppler.
 
-Project Name: `<choose-a-project-name>`  
+Project Name: `<name-of-github-repo>` 
 Configs: `dev`, `stg`, `prd`  
 Variables:
+
 ```yaml
-APP_NAME: <name-of-your-app>
 AWS_ACCOUNT_ID: <aws-account-id>
-AWS_PROFILE: <profile-with-correct-permissions>
 AWS_REGION: <aws-region> # Kept secret to add another layer of complexity for potential bad actors
 ```
+
+Create your `.doppler`, and `.aws_profile` files in the root - see [Bootstrapping](./iac/README.md#bootstrapping----s3-remote-state-bucket-backend)
