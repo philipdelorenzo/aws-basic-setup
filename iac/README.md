@@ -101,7 +101,3 @@ unset CURDIR
 unset DOPPLER_TOKEN
 unset AWS_PROFILE
 ```
-
-## EKS Documentation
-
-See [EKS Documentation](./aws/terraform/modules/eks/README.md)
