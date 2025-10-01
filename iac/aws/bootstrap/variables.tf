@@ -7,7 +7,6 @@ variable "region" {
   # This should be provided when the module is used, as TF_VAR_REGION - See Doppler
   description = "AWS region"
   type        = string
-  default     = "us-west-2"
 }
 
 variable "profile" {
