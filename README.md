@@ -10,9 +10,11 @@ A simple Terraform project that sets up a VPC with:
 
 ## Prerequisites
 
-#### AWS CLI Configure
+## AWS CLI Configure
 
-We need to configure our AWS CLI - `aws configure`
+#### _This presumes the Doppler project with the same name as the repo, and configs exist._
+
+We need to configure our AWS CLI - `make configure`
 
 There are some prerequisites that will allow the developer to interact with this repo much easier, with
 greater efficiency.
