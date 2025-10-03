@@ -12,7 +12,7 @@ terraform {
   }
 }
 
-module "base_aws_stack" {
+module "aurora_stack" {
   source     = "../../"
   project    = var.project
   network_id = var.network_id

@@ -22,6 +22,7 @@ module "vpc" {
   enable_vpn_gateway = false
 
   tags = {
+    Name        = "${var.project}-vpc"
     Terraform   = "true"
     GithubRepo  = "${var.project}-vpc"
     GithubOrg   = "philipdelorenzo"

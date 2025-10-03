@@ -1,6 +1,6 @@
 # AWS IAC
 
-This is the IaC directory for all provisioning required for the Helium API Client application.
+This is the IaC directory for all provisioning required for the AWS VPC, Network, etc..
 
 ## STOP!
 
@@ -74,7 +74,7 @@ If you run into an issue where the secret will not delete due to the grace perio
 
 ##### Remove Secret
 
-`aws secretsmanager delete-secret --secret-id helium-dev-db-credentials --force-delete-without-recovery --profile <your-aws-profile>`
+`aws secretsmanager delete-secret --secret-id <secret-name> --force-delete-without-recovery --profile <your-aws-profile>`
 
 #### Check to ensure your AuroraDB is not publicly accessible
 
